@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victor Moronu - Edison Schools Application</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --edison-blue: #002060;
+            --edison-orange: #F26522;
+            --text-dark: #333333;
+            --text-light: #555555;
+            --paper-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #e5e7eb;
+            color: var(--text-dark);
+        }
+
+        h1, h2, h3, h4, .brand-font {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Paper Effect */
+        .a4-paper {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 20mm;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Custom Accents */
+        .section-header {
+            color: var(--edison-blue);
+            border-bottom: 2px solid var(--edison-orange);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            margin-top: 1.5rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .quote-box {
+            border-left: 4px solid var(--edison-orange);
+            background-color: #fff5f0;
+            padding: 1rem;
+            font-style: italic;
+            color: var(--edison-blue);
+            margin: 1.5rem 0;
+        }
+
+        /* Branding Header */
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 3px solid var(--edison-blue);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .applicant-name {
+            color: var(--edison-blue);
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .applicant-role {
+            color: var(--edison-orange);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 0.25rem;
+        }
+
+        .contact-info {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-align: right;
+            line-height: 1.4;
+        }
+
+        /* Tabs Navigation */
+        .nav-tab {
+            transition: all 0.3s ease;
+        }
+        .nav-tab.active {
+            color: var(--edison-blue);
+            border-bottom: 3px solid var(--edison-orange);
+            font-weight: 700;
+        }
+        .nav-tab:hover:not(.active) {
+            color: var(--edison-orange);
+        }
+
+        /* Content Visibility */
+        .page-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .page-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Text Utilities */
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        
+        .highlight {
+            color: var(--edison-orange);
+            font-weight: 700;
+        }
+
+        .bold-blue {
+            color: var(--edison-blue);
+            font-weight: 700;
+        }
+
+        /* Skills Tag Styling */
+        .skill-tag {
+            display: inline-block;
+            background-color: #f3f4f6;
+            color: var(--edison-blue);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: none;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .a4-paper {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                min-height: auto;
+                page-break-after: always;
+                padding: 0; /* Let print margin handle it or keep minimal */
+            }
+            .page-content {
+                display: block !important; /* Show all pages when printing */
+                page-break-after: always;
+            }
+            .page-content:last-child {
+                page-break-after: auto;
+            }
+            
+            /* Add some spacing for the second page header when printing */
+            #philosophy, #cv {
+                margin-top: 0;
+            }
+        }
+
+        /* Screen responsiveness for mobile */
+        @media (max-width: 768px) {
+            .a4-paper {
+                width: 100%;
+                padding: 1.5rem;
+                min-height: auto;
+            }
+            .doc-header {
+                flex-direction: column;
+                text-align: left;
+            }
+            .contact-info {
+                text-align: left;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="pb-12">
+
+    <!-- Navbar / Controls -->
+    <nav class="bg-white shadow-md sticky top-0 z-50 no-print">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center gap-2">
+                        <!-- Simple CSS Icon resembling Edison Bulb/Spark -->
+                        <div class="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center text-white font-bold brand-font">E</div>
+                        <span class="font-bold text-gray-800 text-lg hidden sm:block">Application Portal</span>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <button onclick="switchTab('cover-letter')" id="tab-cover-letter" class="nav-tab active inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900">
+                            Cover Letter
+                        </button>
+                        <button onclick="switchTab('cv')" id="tab-cv" class="nav-tab inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700">
+                            Curriculum Vitae
+                        </button>
+                        <button onclick="switchTab('philosophy')" id="tab-philosophy" class="nav-tab inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700">
+                            Philosophy
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button onclick="window.print()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        <i class="fas fa-print mr-2"></i> Print / Save PDF
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Tabs -->
+            <div class="flex md:hidden border-t border-gray-200">
+                <button onclick="switchTab('cover-letter')" class="flex-1 py-3 text-sm font-medium text-center hover:bg-gray-50">Cover Letter</button>
+                <button onclick="switchTab('cv')" class="flex-1 py-3 text-sm font-medium text-center hover:bg-gray-50 border-l border-gray-200">CV</button>
+                <button onclick="switchTab('philosophy')" class="flex-1 py-3 text-sm font-medium text-center hover:bg-gray-50 border-l border-gray-200">Philosophy</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="mt-8 flex flex-col items-center gap-8 print:mt-0 print:block">
+
+        <!-- PAGE 1: COVER LETTER -->
+        <div id="cover-letter" class="a4-paper page-content active">
+            
+            <!-- Header -->
+            <header class="doc-header">
+                <div>
+                    <h1 class="applicant-name">VICTOR MORONU</h1>
+                    <div class="applicant-role">Math/Science Teacher & STEM Lead</div>
+                </div>
+                <div class="contact-info">
+                    <p class="m-0"><i class="fas fa-map-marker-alt text-orange-500 mr-2"></i>VinHomes Smart City, Hanoi</p>
+                    <p class="m-0"><i class="fas fa-phone text-orange-500 mr-2"></i>+84 98 893 0491</p>
+                    <p class="m-0"><i class="fas fa-envelope text-orange-500 mr-2"></i>vmoronu@gmail.com</p>
+                    <p class="m-0"><i class="fab fa-linkedin text-orange-500 mr-2"></i>linkedin.com/in/victormoronu</p>
+                </div>
+            </header>
+
+            <!-- Recipient -->
+            <div class="mb-6 text-sm">
+                <p class="font-bold text-gray-800 mb-1">January 12, 2026</p>
+                <br>
+                <p class="font-bold text-gray-900 m-0">Ms. Nguyen Ngoc Lan</p>
+                <p class="text-gray-600 m-0 mb-2">Head of International Program</p>
+                
+                <p class="font-bold text-gray-900 m-0">Mr. Phan Anh</p>
+                <p class="text-gray-600 m-0 mb-2">Principal, Secondary School</p>
+
+                <p class="font-bold text-gray-900 m-0">Edison Schools Hanoi (An Khanh Campus)</p>
+                <p class="text-gray-600 m-0">Mailand Hanoi City Township, Bac An Khanh, Hoai Duc, Hanoi</p>
+            </div>
+
+            <!-- Title -->
+            <div class="mb-6 border-l-4 border-blue-900 pl-4 py-1 bg-gray-50">
+                <span class="font-bold text-blue-900 uppercase tracking-wide text-sm">RE:</span>
+                <span class="font-semibold text-gray-800 ml-2">Application for Secondary Math/Science Teacher & STEM Lead Candidate</span>
+            </div>
+
+            <!-- Body -->
+            <div class="text-gray-800 text-sm leading-relaxed">
+                <p>
+                    Dear Ms. Nguyen Ngoc Lan, Mr. Phan Anh, and the Edison Schools Hiring Committee,
+                </p>
+                
+                <p>
+                    The mission of Edison Schools to foster <span class="highlight">"Innovation for Life"</span> resonates deeply with my professional identity. As an educator who began his career as a Mechanical Engineer, I have always viewed the classroom not as a static lecture hall, but as a dynamic laboratory for construction and discovery. It is this unique synthesis of engineering rigor and pedagogical innovation that I wish to bring to the An Khanh campus, specifically to support your American Bilingual Program and your distinguished VEX Robotics initiatives.
+                </p>
+
+                <p>
+                    I am writing to formally apply for the position of <span class="bold-blue">Math/Science Teacher</span>, with a specific interest in contributing to the STEM and Robotics faculties. Holding a <strong>Bachelor of Engineering in Mechanical Engineering</strong>, a <strong>U.S. Teaching License</strong>, and currently finalizing a <strong>Master of Education (M.Ed.) in Educational Technology</strong>, I offer a distinct "Engineer-Educator" profile that aligns directly with Edison Schools’ status as a Microsoft Showcase School.
+                </p>
+
+                <h3 class="section-header">Bridging Engineering and the Common Core</h3>
+                <p>
+                    Your curriculum’s reliance on the U.S. Common Core and NGSS requires educators who can navigate the complexities of inquiry-based learning. My background in Applied Mechanics allows me to deconstruct complex mathematical concepts—such as quadratic functions or vectors—and reconstruct them through real-world engineering applications.
+                </p>
+                <p>
+                    At Victoria Thang Long School, I designed a "Bridge Building" unit where Grade 7 students acted as civil engineers, utilizing static force analysis to test structural integrity. This initiative did not merely cover the syllabus; it increased student engagement metrics by <span class="highlight">20%</span> and provided a tangible context for abstract mathematics. I am prepared to deliver this same standard of rigorous, project-based instruction using the American textbooks and resources central to your bilingual program.
+                </p>
+
+                <h3 class="section-header">Advancing the Robotics Ecosystem</h3>
+                <p>
+                    I have followed with admiration the success of Edison teams like <span class="bold-blue">EDS_Bunreal</span> and <span class="bold-blue">EDS_Mejor</span> at the National VEX Robotics Championships. My technical proficiency in <strong>Python</strong> and <strong>JavaScript</strong>, combined with my foundational knowledge of mechanical systems (gear ratios, torque, and structural dynamics), positions me to effectively mentor your VEX IQ and V5 teams. I look beyond the "build instructions" to teach students the underlying physics of their robots, enabling them to design more efficient, competitive machines. My goal is to support your students in maintaining their national dominance and succeeding on the global stage.
+                </p>
+
+                <h3 class="section-header">Commitment to the "Happy School" Philosophy</h3>
+                <p>
+                    Rigor cannot exist without relationship. I am a staunch advocate of the "Happy School" philosophy, understanding that emotional safety is the prerequisite for intellectual risk-taking. In my capacity as a Homeroom Advisor, I have developed pastoral care modules focused on resilience and emotional intelligence. I strive to create a "Happy Classroom" where failure is reframed as "iteration"—a necessary step in the engineering design process. This approach builds the confidence and proactiveness that are core values of the Edison community.
+                </p>
+
+                <h3 class="section-header">Technological Fluency</h3>
+                <p>
+                    As an M.Ed. candidate specializing in EdTech, I am trained in the <strong>TPACK framework</strong>, ensuring that my use of technology—from AI prompting to GeoGebra and Desmos—is pedagogically sound and enhances learning outcomes. This expertise supports Edison’s vision of digital transformation and personalized learning.
+                </p>
+                
+                <p class="mt-6">
+                    I am eager to bring my passion for engineering, my commitment to student well-being, and my proven track record of improving assessment outcomes (by <strong>15%</strong> in my current role) to Edison Schools An Khanh. I welcome the opportunity to discuss how I can contribute to the "Red Brick School" legacy.
+                </p>
+
+                <p>
+                    Thank you for your time and consideration.
+                </p>
+                
+                <div class="mt-8">
+                    <p class="m-0 font-bold text-blue-900">Sincerely,</p>
+                    <br>
+                    <p class="font-bold text-lg m-0">Victor Moronu</p>
+                    <p class="text-sm italic text-gray-600 m-0">B.Eng (Mechanical), M.Ed. Candidate (Educational Technology)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2: CURRICULUM VITAE -->
+        <div id="cv" class="a4-paper page-content">
+            
+            <header class="doc-header">
+                <div>
+                    <h1 class="applicant-name">VICTOR MORONU</h1>
+                    <div class="applicant-role">Quantitative Specialist & Mathematics Educator</div>
+                </div>
+                <div class="contact-info">
+                    <p class="m-0"><i class="fas fa-map-marker-alt text-orange-500 mr-2"></i>Hanoi, Vietnam</p>
+                    <p class="m-0"><i class="fas fa-phone text-orange-500 mr-2"></i>+84 98 893 0491</p>
+                    <p class="m-0"><i class="fas fa-envelope text-orange-500 mr-2"></i>vmoronu@gmail.com</p>
+                    <p class="m-0"><i class="fab fa-linkedin text-orange-500 mr-2"></i>linkedin.com/in/victor-moronu</p>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 text-sm">
+                
+                <!-- Main Column (Left/Center - 8 cols) -->
+                <div class="md:col-span-8">
+                    
+                    <!-- EDUCATION FIRST (Strategic Priority) -->
+                    <h3 class="section-header mt-0">Education & Licensure</h3>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <span class="font-bold text-gray-900 text-base">U.S. Teaching License (In Progress)</span>
+                            <span class="text-gray-600 font-semibold">Expected Jan 2026</span>
+                        </div>
+                        <div class="text-gray-700 italic">Moreland University, USA</div>
+                    </div>
+                    <div class="mb-6">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <span class="font-bold text-gray-900 text-base">B.Eng. Mechanical Engineering</span>
+                            <span class="text-gray-600 font-semibold">2018</span>
+                        </div>
+                        <div class="text-gray-700 italic">University of Nigeria</div>
+                    </div>
+
+                    <!-- KEY SKILLS MATRIX -->
+                    <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-900 mb-8">
+                        <h4 class="text-blue-900 font-bold mb-3 text-xs uppercase tracking-wider">Key Skills Matrix</h4>
+                        <div>
+                            <span class="skill-tag">Data-Driven Instruction</span>
+                            <span class="skill-tag">Mastery Learning</span>
+                            <span class="skill-tag">IB MYP Math</span>
+                            <span class="skill-tag">SAT/GRE Quant</span>
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">GeoGebra</span>
+                            <span class="skill-tag">Desmos</span>
+                            <span class="skill-tag">AI Prompting</span>
+                            <span class="skill-tag">Differentiation</span>
+                        </div>
+                    </div>
+
+                    <!-- PROFESSIONAL EXPERIENCE -->
+                    <h3 class="section-header">Professional Experience</h3>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <span class="font-bold text-gray-900">Secondary School Science & Math Teacher</span>
+                            <span class="text-gray-600 font-semibold text-xs">Sept 2024 - Present</span>
+                        </div>
+                        <div class="text-orange-600 font-semibold text-xs mb-2">Victoria Thăng Long | Hanoi, Vietnam</div>
+                        <ul class="list-disc pl-4 space-y-1 text-gray-700">
+                            <li><span class="font-bold text-gray-900">Impact:</span> Achieved a <span class="bold-blue">15% increase</span> in termly assessment averages through data-driven differentiation strategies.</li>
+                            <li>Designed scaffolded worksheets specifically for EAL learners in mixed-ability classes.</li>
+                            <li>Led a 'Bridge Building' engineering unit applying Forces and Statics, increasing student engagement scores by <span class="bold-blue">20%</span>.</li>
+                            <li>Acted as Homeroom advisor, delivering pastoral care modules.</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <span class="font-bold text-gray-900">Academic Manager & IB MYP Instructor</span>
+                            <span class="text-gray-600 font-semibold text-xs">2022 - 2024</span>
+                        </div>
+                        <div class="text-orange-600 font-semibold text-xs mb-2">Boda Learning Center | Hanoi, Vietnam</div>
+                        <ul class="list-disc pl-4 space-y-1 text-gray-700">
+                            <li>Directed academic operations for a premium center catering to high-performing international students.</li>
+                            <li><span class="font-bold text-gray-900">Result:</span> Improved average SAT scores by <span class="bold-blue">100+ points</span> for over 10 students using engineering problem-solving techniques.</li>
+                            <li>Delivered IB MYP Mathematics instruction aligned strictly with IB assessment criteria.</li>
+                            <li>Managed a faculty of 5 instructors, overseeing professional development.</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <span class="font-bold text-gray-900">Primary School Math & Science Teacher</span>
+                            <span class="text-gray-600 font-semibold text-xs">Aug 2023 - June 2024</span>
+                        </div>
+                        <div class="text-orange-600 font-semibold text-xs mb-2">Hanoi Primary & High School System (Thang Long)</div>
+                        <ul class="list-disc pl-4 space-y-1 text-gray-700">
+                            <li>Designed playful, concept-rich lessons for Grades 1-4, improving participation by 20%.</li>
+                            <li>Created custom teaching materials blending Cambridge and McGraw-Hill curricula.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <span class="font-bold text-gray-900">SAT & GRE Quantitative Instructor</span>
+                            <span class="text-gray-600 font-semibold text-xs">2017 - 2021</span>
+                        </div>
+                        <div class="text-orange-600 font-semibold text-xs mb-2">Synergy Lifeline Consulting</div>
+                        <ul class="list-disc pl-4 space-y-1 text-gray-700">
+                            <li>Tutored over 500 students with a <span class="bold-blue">90% success rate</span> in achieving target scores.</li>
+                            <li>Authored the study guide "Synergy Ace the Quantitative Section of the SAT and GRE".</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Sidebar (Right - 4 cols) -->
+                <div class="md:col-span-4 border-l border-gray-200 pl-6">
+                    
+                    <div class="mb-8">
+                        <h4 class="text-gray-900 font-bold uppercase mb-3 border-b border-gray-300 pb-1 text-xs">Profile Summary</h4>
+                        <p class="text-xs text-gray-600 italic leading-relaxed text-left">
+                            Results-oriented Mathematics & STEM Educator with a B.Eng in Mechanical Engineering. Expert in Data-Driven Instruction and Mastery Learning. Successfully raised student assessment scores by 15% and guided SAT/GRE students to top-tier percentiles.
+                        </p>
+                    </div>
+
+                    <div class="mb-8">
+                        <h4 class="text-gray-900 font-bold uppercase mb-3 border-b border-gray-300 pb-1 text-xs">Certifications</h4>
+                        <ul class="text-xs space-y-2 text-gray-700">
+                            <li><i class="fas fa-certificate text-orange-500 mr-2"></i>TEFL (London Teacher Training College)</li>
+                            <li><i class="fas fa-certificate text-orange-500 mr-2"></i>IELTS Band 8.5 (C2 Proficient)</li>
+                            <li><i class="fas fa-certificate text-orange-500 mr-2"></i>IBMI Berlin</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-8">
+                        <h4 class="text-gray-900 font-bold uppercase mb-3 border-b border-gray-300 pb-1 text-xs">Publications</h4>
+                        <div class="text-xs text-gray-700">
+                            <strong>Author:</strong> "Synergy Ace the Quantitative Section of the SAT and GRE: A Step-by-Step Guide"
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h4 class="text-gray-900 font-bold uppercase mb-3 border-b border-gray-300 pb-1 text-xs">Languages</h4>
+                        <ul class="text-xs space-y-2 text-gray-700">
+                            <li class="flex justify-between"><span>English</span> <span class="font-bold">Native/C2</span></li>
+                            <li class="flex justify-between"><span>Igbo</span> <span class="font-bold">Native</span></li>
+                            <li class="flex justify-between"><span>Spanish</span> <span class="text-gray-500">Basic</span></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                         <h4 class="text-gray-900 font-bold uppercase mb-3 border-b border-gray-300 pb-1 text-xs">Core Competencies</h4>
+                         <ul class="text-xs space-y-1 text-gray-700 list-disc pl-4">
+                             <li>SAT Math / GRE Quant</li>
+                             <li>Calculus & Physics</li>
+                             <li>Scaffolding Instruction</li>
+                             <li>Engineering Design</li>
+                         </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- PAGE 3: PHILOSOPHY -->
+        <div id="philosophy" class="a4-paper page-content">
+            
+            <!-- Simplified Header for Page 3 -->
+            <header class="doc-header" style="border-bottom: 2px solid var(--edison-orange);">
+                <div>
+                    <h1 class="applicant-name" style="font-size: 1.5rem;">EDUCATIONAL PHILOSOPHY</h1>
+                    <div class="applicant-role text-sm">Victor Moronu</div>
+                </div>
+                <div class="hidden sm:block">
+                     <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold brand-font text-xs">VM</div>
+                </div>
+            </header>
+
+            <div class="quote-box text-center">
+                <i class="fas fa-quote-left mb-2 text-2xl opacity-20"></i><br>
+                <span class="text-lg font-serif">"The Mind is Not a Vessel to be Filled, but a Fire to be Kindled."</span>
+                <br>
+                <span class="text-sm font-bold mt-2 block uppercase text-gray-400">— Plutarch</span>
+            </div>
+
+            <div class="text-gray-800 text-sm leading-relaxed mt-6">
+                <p class="font-medium text-gray-600 mb-6 italic">
+                    My educational philosophy is an intersection of two distinct but complementary frameworks: <span class="text-blue-900 font-bold">Constructionism</span> and <span class="text-blue-900 font-bold">Humanistic Education</span>. As a Mechanical Engineer turned educator, I approach the learning process as a design challenge where the student is the architect of their own understanding.
+                </p>
+
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="bg-blue-900 text-white rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold font-serif">1</div>
+                    <div>
+                        <h3 class="text-blue-900 font-bold uppercase mb-2">Learning by Making (Constructionism)</h3>
+                        <p>
+                            I believe that deep learning occurs when students are actively engaged in creating public entities. In my Math and Science classrooms, equations are not abstract rules to be memorized; they are tools for building. Whether it is coding a Python script to model a trajectory or constructing a truss bridge to understand vector forces, my students learn by <span class="italic font-bold">doing</span>. This aligns with the "Innovation for Life" ethos, as I encourage students to use their knowledge to solve tangible problems. I utilize <strong>Inquiry-Based Learning (IBL)</strong> to drive this process, starting units with provocative questions that necessitate mathematical tools to answer.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="bg-orange-500 text-white rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold font-serif">2</div>
+                    <div>
+                        <h3 class="text-blue-900 font-bold uppercase mb-2">The Classroom as an Emotional Ecosystem (The "Happy School")</h3>
+                        <p>
+                            I adhere to the belief that Maslow must come before Bloom. A student who feels anxious or unsafe cannot engage in the higher-order thinking required for STEM innovation. My classroom is designed as a "Happy Environment" where psychological safety is paramount. I explicitly teach that failure is data—a concept native to engineering. By reframing mistakes as "iterations," I build resilience and banish the fear of being wrong. This emotional scaffolding allows students to take the intellectual risks necessary for creativity and growth.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="bg-blue-900 text-white rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold font-serif">3</div>
+                    <div>
+                        <h3 class="text-blue-900 font-bold uppercase mb-2">Technology as an Amplifier</h3>
+                        <p>
+                            In the 21st century, technology is the vernacular of the learner. As an Educational Technology specialist, I view digital tools not as substitutes for teaching, but as amplifiers of human potential. I integrate AI, interactive simulations (Desmos, PhET), and collaborative platforms to differentiate instruction. This ensures that every learner, regardless of their starting point, has a personalized pathway to mastery. I aim to produce students who are not just consumers of technology, but ethical and proficient creators.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="bg-orange-500 text-white rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold font-serif">4</div>
+                    <div>
+                        <h3 class="text-blue-900 font-bold uppercase mb-2">Global Citizenship</h3>
+                        <p>
+                            Finally, I believe that Math and Science are universal languages that bridge cultural divides. In a bilingual setting, I use these subjects to foster global citizenship, helping students understand that the laws of physics and the logic of mathematics are shared human heritages. I aim to nurture proactive, responsible citizens who use their skills to contribute positively to their community and the world.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footer Decor for Philosophy -->
+                <div class="mt-12 flex justify-center opacity-50">
+                    <div class="h-1 w-16 bg-blue-900 rounded-full mx-1"></div>
+                    <div class="h-1 w-4 bg-orange-500 rounded-full mx-1"></div>
+                    <div class="h-1 w-16 bg-blue-900 rounded-full mx-1"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function switchTab(tabId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Deactivate all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                tab.classList.remove('border-b-2');
+                tab.classList.remove('border-transparent');
+                
+                // Reset to default inactive style
+                if (tab.id !== 'tab-' + tabId) {
+                    tab.classList.add('border-transparent', 'text-gray-500');
+                    tab.classList.remove('text-gray-900', 'font-bold');
+                }
+            });
+
+            // Activate selected page
+            document.getElementById(tabId).classList.add('active');
+
+            // Activate selected tab
+            const activeTab = document.getElementById('tab-' + tabId);
+            activeTab.classList.add('active', 'text-gray-900', 'font-bold');
+            activeTab.classList.remove('border-transparent', 'text-gray-500');
+        }
+    </script>
+</body>
+</html>
